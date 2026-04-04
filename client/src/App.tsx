@@ -9,9 +9,10 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import TripPlanner from "./pages/TripPlanner";
-import HotelSearch from "./pages/Hotelsearch";
 import Dashboard from "./pages/Dashboard";
 import TripEditor from "./pages/TripEditor";
+import HotelSearch from "./pages/Hotelsearch";
+import HotelDetail from './pages/HotelDetail'
 
 function App() {
   return (
@@ -42,14 +43,8 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/hotels"
-              element={
-                <ProtectedRoute>
-                  <HotelSearch />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/hotels" element={<HotelSearch />} />
+            <Route path="/hotels/:id" element={<HotelDetail />} />
             <Route
               path="/dashboard"
               element={

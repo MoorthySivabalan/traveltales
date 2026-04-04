@@ -7,7 +7,6 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "seed:packages": "ts-node src/seeds/packageSeed.ts",
     "seed:hotels": "ts-node src/seeds/hotelSeed.ts"
   },
   "keywords": [],
