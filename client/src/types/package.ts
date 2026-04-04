@@ -37,4 +37,5 @@ export interface TravelPackage {
   pricing: PackagePricing
   tags: string[]
   isDefault: boolean
+  coordinates: { lat: number; lng: number; label: string }[]
 }

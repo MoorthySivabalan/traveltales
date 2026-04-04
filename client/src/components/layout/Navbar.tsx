@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuthStore } from "../../store/authStore";
-import { LogOut  } from "lucide-react";
+import { LogOut } from "lucide-react";
 import TravelTalesLogo from "./TravelTalesLogo";
 
 const navLinks = [
@@ -63,6 +63,12 @@ const Navbar = () => {
 
             {isLoggedIn ? (
               <div className="flex items-center gap-3">
+                <Link
+                  to="/dashboard"
+                  className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand dark:hover:text-blue-400 transition-colors"
+                >
+                  My Trips
+                </Link>
                 <Link
                   to="/dashboard"
                   className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
