@@ -11,6 +11,7 @@ const navLinks = [
   { label: "Explore", path: "/explore" },
   { label: "Trip Planner", path: "/planner" },
   { label: "Hotels", path: "/hotels" },
+  { label: 'Calculator', path: '/calculator' },
 ];
 
 const Navbar = () => {

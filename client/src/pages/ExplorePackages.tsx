@@ -29,8 +29,9 @@ import {
 } from "../data/oneDayTrips";
 import type { TravelPackage } from "../types/package";
 import type { OneDayTrip } from "../data/oneDayTrips";
-
-const isLoggedIn = false;
+import { useAuthStore } from "../store/authStore";
+import toast from "react-hot-toast";
+import { createTripFromPackage } from "../api/tripApi";
 
 const tagColors: Record<string, string> = {
   "Most Popular": "bg-accent text-white",
@@ -57,7 +58,8 @@ const budgetLabels = { budget: "Budget", mid: "Mid-range", premium: "Premium" };
 
 // ── ONE DAY TRIP CARD ──
 const OneDayCard = ({ trip, index }: { trip: OneDayTrip; index: number }) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false)
+  const { isLoggedIn } = useAuthStore()
 
   return (
     <motion.div
@@ -162,6 +164,28 @@ const OneDayCard = ({ trip, index }: { trip: OneDayTrip; index: number }) => {
             <span>{trip.tips[0]}</span>
           </div>
         )}
+
+        {/* Action buttons */}
+        <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+          <button
+            onClick={() => {
+              if (!isLoggedIn) {
+                toast.error("Please login to save this trip");
+                return;
+              }
+              toast.success("One day trip saved to your trips!");
+            }}
+            className="flex-1 text-center py-2 bg-brand/10 dark:bg-brand/20 hover:bg-brand text-brand hover:text-white dark:text-blue-400 dark:hover:text-white rounded-xl text-sm font-medium transition-all"
+          >
+            Save Trip
+          </button>
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="flex-1 text-center py-2 border border-gray-200 dark:border-gray-700 hover:border-brand hover:text-brand dark:hover:border-blue-400 dark:hover:text-blue-400 text-gray-500 dark:text-gray-400 rounded-xl text-sm transition-all"
+          >
+            {expanded ? "Hide Plan" : "View Plan"}
+          </button>
+        </div>
       </div>
     </motion.div>
   );
@@ -175,10 +199,19 @@ const MultiDayCard = ({
   pkg: TravelPackage;
   index: number;
 }) => {
-  const handleEditCopy = () => {
+  const { isLoggedIn } = useAuthStore()
+
+  const handleEditCopy = async () => {
     if (!isLoggedIn) {
-      alert("Please log in to edit a copy of this package.");
+      toast.error("Please login to save a copy");
       return;
+    }
+    try {
+      const res = await createTripFromPackage(pkg, "economy");
+      toast.success("Package saved! Redirecting to editor...");
+      window.location.href = `/trip-editor/${res.trip._id}`;
+    } catch {
+      toast.error("Failed to save. Try again.");
     }
   };
 

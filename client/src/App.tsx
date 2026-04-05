@@ -11,8 +11,9 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import TripPlanner from "./pages/TripPlanner";
 import Dashboard from "./pages/Dashboard";
 import TripEditor from "./pages/TripEditor";
-import HotelSearch from "./pages/Hotelsearch";
+import HotelSearch from "./pages/HotelSearch";
 import HotelDetail from './pages/HotelDetail'
+import CostCalculator from './pages/CostCalculator'
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/calculator" element={<CostCalculator />} />
           </Routes>
         </main>
         <Footer />
