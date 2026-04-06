@@ -58,8 +58,8 @@ const budgetLabels = { budget: "Budget", mid: "Mid-range", premium: "Premium" };
 
 // ── ONE DAY TRIP CARD ──
 const OneDayCard = ({ trip, index }: { trip: OneDayTrip; index: number }) => {
-  const [expanded, setExpanded] = useState(false)
-  const { isLoggedIn } = useAuthStore()
+  const [expanded, setExpanded] = useState(false);
+  const { isLoggedIn } = useAuthStore();
 
   return (
     <motion.div
@@ -199,7 +199,7 @@ const MultiDayCard = ({
   pkg: TravelPackage;
   index: number;
 }) => {
-  const { isLoggedIn } = useAuthStore()
+  const { isLoggedIn } = useAuthStore();
 
   const handleEditCopy = async () => {
     if (!isLoggedIn) {
