@@ -6,6 +6,8 @@ export interface IHotel extends Document {
   state: string
   region: string
   address: string
+  nearestLandmark: string
+  howToReach: string
   rating: number
   reviews: number
   pricePerNight: {
@@ -18,6 +20,7 @@ export interface IHotel extends Document {
   coordinates: { lat: number; lng: number }
   type: 'budget' | 'mid-range' | 'luxury'
   tags: string[]
+  builtYear?: number
 }
 
 const HotelSchema = new Schema<IHotel>(
@@ -27,6 +30,8 @@ const HotelSchema = new Schema<IHotel>(
     state: { type: String, required: true },
     region: { type: String, required: true },
     address: { type: String, required: true },
+    nearestLandmark: { type: String, default: '' },
+    howToReach: { type: String, default: '' },
     rating: { type: Number, required: true },
     reviews: { type: Number, default: 0 },
     pricePerNight: {
@@ -42,6 +47,7 @@ const HotelSchema = new Schema<IHotel>(
     },
     type: { type: String, enum: ['budget', 'mid-range', 'luxury'], default: 'mid-range' },
     tags: [{ type: String }],
+    builtYear: { type: Number },
   },
   { timestamps: true }
 )
