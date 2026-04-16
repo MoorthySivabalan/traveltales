@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -27,11 +27,13 @@ import {
   oneDayRegions,
   budgetOptions,
 } from "../data/oneDayTrips";
-import type { TravelPackage } from "../types/package";
+import type { TravelPackage, PackageRegion } from "../types/package";
 import type { OneDayTrip } from "../data/oneDayTrips";
 import { useAuthStore } from "../store/authStore";
 import toast from "react-hot-toast";
 import { createTripFromPackage } from "../api/tripApi";
+import { useTripStore } from "../store/tripStore";
+import { Loader2 } from "lucide-react";
 
 const tagColors: Record<string, string> = {
   "Most Popular": "bg-accent text-white",
@@ -59,7 +61,54 @@ const budgetLabels = { budget: "Budget", mid: "Mid-range", premium: "Premium" };
 // ── ONE DAY TRIP CARD ──
 const OneDayCard = ({ trip, index }: { trip: OneDayTrip; index: number }) => {
   const [expanded, setExpanded] = useState(false);
+  const [saving, setSaving] = useState(false);
   const { isLoggedIn } = useAuthStore();
+  const addTrip = useTripStore((s) => s.addTrip);
+  const navigate = useNavigate()
+
+    const handleSave = async () => {
+    if (!isLoggedIn) {
+      toast.error('Please login to save this trip')
+      navigate('/login')
+      return
+    }
+    try {
+      setSaving(true)
+      const res = await createTripFromPackage({
+        id: trip.id,
+        name: `${trip.destination} Day Trip`,
+        caption: `A one-day trip to ${trip.destination} from ${trip.baseCity}`,
+        state: trip.baseState,
+        region: trip.region as PackageRegion,
+        duration: 1,
+        image: trip.image,
+        attractions: trip.tags,
+        itinerary: trip.itinerary.map(
+          (item, i) => `${item.time}: ${item.activity}`
+        ),
+        pricing: {
+          economy: {
+            hotel: trip.costs[0]?.amount || 'As per stay',
+            transport: trip.transport[0]?.cost || 'As per mode',
+          },
+          premium: {
+            hotel: trip.costs[0]?.amount || 'As per stay',
+            transport: trip.transport[1]?.cost || trip.transport[0]?.cost || 'As per mode',
+          },
+        },
+        tags: [...trip.tags, 'One Day Trip'],
+        isDefault: false,
+        coordinates: [],
+      }, 'economy')
+      addTrip(res.trip)
+      toast.success('One day trip saved! Redirecting to dashboard...')
+      navigate('/dashboard')
+    } catch {
+      toast.error('Failed to save trip. Try again.')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   return (
     <motion.div
@@ -168,16 +217,12 @@ const OneDayCard = ({ trip, index }: { trip: OneDayTrip; index: number }) => {
         {/* Action buttons */}
         <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
           <button
-            onClick={() => {
-              if (!isLoggedIn) {
-                toast.error("Please login to save this trip");
-                return;
-              }
-              toast.success("One day trip saved to your trips!");
-            }}
-            className="flex-1 text-center py-2 bg-brand/10 dark:bg-brand/20 hover:bg-brand text-brand hover:text-white dark:text-blue-400 dark:hover:text-white rounded-xl text-sm font-medium transition-all"
+            onClick={handleSave}
+            disabled={saving}
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-brand/10 dark:bg-brand/20 hover:bg-brand text-brand hover:text-white dark:text-blue-400 dark:hover:text-white rounded-xl text-sm font-medium transition-all disabled:opacity-60"
           >
-            Save Trip
+            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+            {saving ? "Saving..." : "Save Trip"}
           </button>
           <button
             onClick={() => setExpanded(!expanded)}

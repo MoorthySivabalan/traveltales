@@ -299,12 +299,16 @@ const PackageDetail = () => {
 
                 {/* CTA Buttons */}
                 <div className="space-y-3">
-                  <Link
-                    to={`/checkout/${pkg.id}`}
-                    className="w-full block text-center py-3 bg-brand hover:bg-navy text-white rounded-xl font-medium transition-all duration-200 hover:scale-[1.02]"
+                  <button
+                    onClick={handleEditCopy}
+                    disabled={saving}
+                    className="w-full flex items-center justify-center gap-2 py-3 bg-brand hover:bg-navy disabled:opacity-60 text-white rounded-xl font-medium transition-all duration-200 hover:scale-[1.02]"
                   >
-                    Book This Package
-                  </Link>
+                    {saving ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : null}
+                    {saving ? "Saving..." : "Book This Package"}
+                  </button>
                   <button
                     onClick={handleEditCopy}
                     disabled={saving}
